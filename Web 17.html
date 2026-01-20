@@ -1,0 +1,1505 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CV – Valentin Nativel</title>
+  <meta name="description" content="CV web de Valentin Nativel : parcours académique, expériences, compétences, soft skills et passions." />
+
+  <style>
+    /* =========================================================
+      VARIABLES GLOBALES (design system)
+      - Couleurs, transparences, ombres, rayons…
+      - Modifie ici pour changer l'identité visuelle de tout le site
+    ========================================================= */
+    :root{
+      /* Couleurs principales */
+      --bg:#070a14;                        /* fond principal */
+      --card: rgba(255,255,255,.06);       /* cartes (glass) */
+      --card2: rgba(17,26,51,.40);         /* cartes secondaires (plus dense) */
+      --text:#e9eefc;                      /* texte principal */
+      --muted:#b7c2e2;                     /* texte secondaire */
+      --line:rgba(255,255,255,.10);        /* bordures fines */
+      --accent:#6aa8ff;                    /* accent bleu */
+      --accent2:#7c3aed;                   /* accent violet */
+      --shadow: 0 18px 50px rgba(0,0,0,.35); /* ombre principale */
+      --radius:18px;                       /* arrondi global */
+      --max: 1100px;                       /* largeur max du contenu */
+
+      /* CYBER (effets et teintes “néon”) */
+      --cyan:#2ef2ff;                      /* néon cyan */
+      --danger:#ff2b6a;                    /* néon rose */
+      --grid: rgba(46,242,255,.08);        /* couleur de grille (fond) */
+    }
+
+    /* =========================================================
+      RESET / BASE
+      - Normalise le sizing et les comportements par défaut
+    ========================================================= */
+    *{ box-sizing:border-box; }
+    html{
+      scroll-behavior:smooth;
+      height:100%;
+    }
+
+    body{
+      margin:0;
+
+      /* Site “one-screen” : on bloque le scroll de la page
+         (les scrolls éventuels sont gérés dans .stage / .panel main) */
+      height:100vh;
+      overflow:hidden;
+
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      color:var(--text);
+
+      /* Fond : mélange de dégradés pour une ambiance cyber */
+      background:
+        radial-gradient(900px 450px at 20% 10%, rgba(106,168,255,.25), transparent 60%),
+        radial-gradient(900px 450px at 80% 20%, rgba(124,58,237,.18), transparent 60%),
+        linear-gradient(180deg, var(--bg), #050711);
+
+      line-height:1.5;
+    }
+
+    /* =========================================================
+      FOND CYBER (pseudo-éléments)
+      - ::before : grille + halo
+      - ::after  : scanlines (lignes horizontales)
+      - pointer-events:none => n’interfère jamais avec les clics
+    ========================================================= */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+
+      background:
+        linear-gradient(to right, var(--grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid) 1px, transparent 1px),
+        radial-gradient(800px 500px at 50% 0%, rgba(46,242,255,.12), transparent 70%);
+
+      background-size: 42px 42px, 42px 42px, auto;
+      opacity:.55;
+      mix-blend-mode: screen; /* rend l’effet plus “lumineux” */
+      z-index:0;
+    }
+
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255,255,255,.04),
+          rgba(255,255,255,.04) 1px,
+          transparent 2px,
+          transparent 6px
+        );
+
+      opacity:.10;
+      z-index:0;
+    }
+
+    /* Liens */
+    a{ color:var(--accent); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    /* =========================================================
+      BARRE DE PROGRESSION (ici surtout décorative)
+      - Bandeau en haut
+      - z-index très haut pour être au-dessus de tout
+    ========================================================= */
+    .progress{
+      position:fixed;
+      top:0; left:0;
+      height:3px;
+      width:100%;
+      background: linear-gradient(90deg, rgba(106,168,255,.25), rgba(124,58,237,.25));
+      z-index:9999;
+      opacity:.35;
+    }
+
+    /* =========================================================
+      WRAPPER PRINCIPAL
+      - Conteneur centré en largeur, plein écran en hauteur
+      - z-index:1 pour passer AU-DESSUS des effets de fond
+    ========================================================= */
+    .wrap{
+      max-width: var(--max);
+      height:100vh;
+      margin: 0 auto;
+      padding: 18px;
+      display:flex;
+      flex-direction:column;
+      gap: 14px;
+      position:relative;
+      z-index:1;
+    }
+
+    /* =========================================================
+      CANVAS PARTICULES (effet cyber)
+      - Placé en fixed plein écran derrière tout le contenu
+    ========================================================= */
+    #cyberParticles{
+      position:fixed;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+      opacity:.7;
+    }
+
+    /* =========================================================
+      NAVIGATION (tabs)
+      - “sticky” en haut (colle pendant le scroll interne)
+      - style glass + néon léger
+    ========================================================= */
+    .nav{
+      flex: 0 0 auto;
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+
+      padding: 12px 14px;
+      border-radius: 999px;
+
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(46,242,255,.14);
+      backdrop-filter: blur(10px);
+
+      box-shadow: 0 18px 50px rgba(0,0,0,.35), 0 0 26px rgba(46,242,255,.08);
+      isolation:isolate; /* isole le stacking des pseudo-éléments */
+    }
+
+    /* Halo néon derrière la nav */
+    .nav::before{
+      content:"";
+      position:absolute; inset:-2px;
+      border-radius:999px;
+      pointer-events:none;
+
+      background: radial-gradient(220px 80px at 10% 40%, rgba(46,242,255,.22), transparent 60%);
+      filter: blur(10px);
+      opacity:.55;
+      z-index:-1;
+    }
+
+    .nav .links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+
+    /* Boutons onglets */
+    .nav button.tab{
+      font-size:13px;
+      font-weight:800;
+      color: var(--text);
+      opacity:.9;
+
+      padding: 8px 10px;
+      border-radius: 999px;
+
+      border: 1px solid transparent;
+      background: transparent;
+      cursor:pointer;
+    }
+
+    .nav button.tab:hover{
+      border-color: rgba(106,168,255,.25);
+      background: rgba(106,168,255,.10);
+      text-decoration:none;
+    }
+
+    /* Onglet sélectionné (aria-selected=true) */
+    .nav button.tab[aria-selected="true"]{
+      border-color: rgba(46,242,255,.50);
+      background: rgba(46,242,255,.12);
+      box-shadow: 0 0 22px rgba(46,242,255,.14);
+      opacity: 1;
+    }
+
+    /* Logo dans la nav */
+    .navLogo{
+      height: 50px;
+      width: auto;
+      display: block;
+      opacity: .95;
+      filter: drop-shadow(0 10px 24px rgba(0,0,0,.35));
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none; /* le logo ne capture pas les clics */
+    }
+
+    /* =========================================================
+      HEADER (hero + contact)
+      - 2 colonnes sur desktop, 1 colonne sur mobile
+    ========================================================= */
+    header{
+      flex: 0 0 auto;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:18px;
+      align-items:stretch;
+    }
+
+    /* =========================================================
+      CARTES PRINCIPALES (hero/contact/sections)
+      - Glass + bordure + glow + animations au hover
+    ========================================================= */
+    .hero, .contact, section{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      isolation:isolate;
+    }
+
+    /* réglages compacts (garde EXACTEMENT ton rendu actuel car c'était déjà tes overrides) */
+    .hero{ padding: 14px 16px; min-height:auto; }
+    .contact{ padding: 18px; min-height:160px; }
+    section{ padding: 18px; }
+
+    /* “Glow” décoratif à l’intérieur de la hero */
+    .glow{
+      position:absolute;
+      inset:-40%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(106,168,255,.18), transparent 55%),
+        radial-gradient(circle at 70% 40%, rgba(124,58,237,.14), transparent 55%);
+      transform: rotate(10deg);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    /* Glow cyber derrière toutes les cartes */
+    .hero::before, .contact::before, section::before{
+      content:"";
+      position:absolute; inset:-2px;
+      border-radius: inherit;
+      pointer-events:none;
+      background:
+        radial-gradient(250px 140px at 20% 15%, rgba(46,242,255,.18), transparent 55%),
+        radial-gradient(240px 150px at 85% 20%, rgba(124,58,237,.16), transparent 60%),
+        radial-gradient(220px 140px at 60% 90%, rgba(0,255,156,.10), transparent 60%);
+      opacity:.9;
+      filter: blur(10px);
+      z-index:0;
+    }
+
+    /* “Sweep” : bande lumineuse animée qui traverse les cartes */
+    .hero::after, .contact::after, section::after{
+      content:"";
+      position:absolute; inset:0;
+      border-radius: inherit;
+      pointer-events:none;
+
+      border: 1px solid rgba(46,242,255,.12);
+      background: linear-gradient(90deg, transparent, rgba(46,242,255,.12), transparent);
+      transform: translateX(-60%);
+      opacity:.55;
+      animation: cyberSweep 7.5s ease-in-out infinite;
+      z-index:0;
+    }
+
+    @keyframes cyberSweep{
+      0%{ transform: translateX(-70%); opacity:.15; }
+      35%{ opacity:.55; }
+      50%{ transform: translateX(70%); opacity:.35; }
+      100%{ transform: translateX(70%); opacity:.10; }
+    }
+
+    /* Hover : petit lift + glow renforcé */
+    .hero:hover, .contact:hover, section:hover{
+      box-shadow: 0 22px 70px rgba(0,0,0,.45), 0 0 28px rgba(46,242,255,.10);
+      border-color: rgba(46,242,255,.18);
+      transform: translateY(-1px);
+    }
+
+    /* =========================================================
+      TYPO (hero)
+    ========================================================= */
+    .name{
+      font-size: clamp(26px, 2.6vw, 40px);
+      margin: 0 0 6px;
+      letter-spacing:.2px;
+      position:relative;
+      z-index:1;
+      text-shadow: 0 0 16px rgba(46,242,255,.10);
+    }
+
+    /* override compact (déjà présent chez toi) */
+    .hero .name{
+      font-size: clamp(24px, 2.4vw, 34px);
+      margin-bottom: 4px;
+    }
+
+    /* Effet glitch sur le nom (activé en JS via data-glitch="1") */
+    .name[data-glitch="1"]::before,
+    .name[data-glitch="1"]::after{
+      content: attr(data-text);
+      position:absolute; left:0; top:0;
+      width:100%;
+      opacity:.10;
+      pointer-events:none;
+    }
+    .name[data-glitch="1"]::before{
+      transform: translate(1px,0);
+      color: var(--cyan);
+      clip-path: inset(0 0 60% 0);
+    }
+    .name[data-glitch="1"]::after{
+      transform: translate(-1px,0);
+      color: var(--danger);
+      clip-path: inset(55% 0 0 0);
+    }
+
+    .role{
+      margin:0 0 12px;
+      color: var(--muted);
+      font-weight: 700;
+      position:relative;
+      z-index:1;
+    }
+    .hero .role{
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .summary{
+      margin:0;
+      opacity:.92;
+      max-width: 75ch; /* limite la largeur de lecture */
+      position:relative;
+      z-index:1;
+    }
+    .hero .summary{
+      max-width: 60ch;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    /* Pills (infos rapides) */
+    .pillrow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top: 12px;
+      position:relative;
+      z-index:1;
+    }
+    .hero .pillrow{ margin-top: 8px; }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.10);
+      color: var(--text);
+      font-size: 14px;
+      white-space:nowrap;
+    }
+    .hero .pill{ padding: 6px 10px; font-size: 13px; }
+
+    /* Titres de sections (contact + sections) */
+    .contact h2, section h2{
+      margin: 0 0 12px;
+      font-size: 18px;
+      letter-spacing:.2px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      position:relative;
+      z-index:1;
+    }
+
+    /* Ligne décorative après le titre */
+    section h2::after, .contact h2::after{
+      content:"";
+      flex:1;
+      height:1px;
+      margin-left:10px;
+      background: linear-gradient(90deg, rgba(46,242,255,.35), transparent);
+      opacity:.6;
+    }
+
+    /* Petit badge “hint” (ex: essentiel / formation / hard skills) */
+    .hint{
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      border: 1px solid var(--line);
+      padding: 4px 10px;
+      border-radius: 999px;
+      white-space:nowrap;
+    }
+
+    /* Liste contact */
+    .contact ul{
+      list-style:none;
+      padding:0;
+      margin:0;
+      display:grid;
+      gap:10px;
+      color: var(--muted);
+      position:relative;
+      z-index:1;
+    }
+
+    /* =========================================================
+      “STAGE” : zone principale (panneaux)
+      - Cette zone peut scroller (overflow:auto), pas la page
+      - Scrollbar cachée (esthétique)
+    ========================================================= */
+    .stage{
+      flex: 1 1 auto;
+      min-height: 0;
+      display:block;
+      position:relative;
+      z-index:1;
+
+      padding-top: 4px;
+
+      overflow: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .stage::-webkit-scrollbar{ width:0; height:0; }
+
+    /* Panels (un par onglet) */
+    .panel{ height: 100%; display:none; }
+    .panel.active{ display:block; }
+
+    /* =========================================================
+      MAIN à l’intérieur des panels
+      - Grid 2 colonnes (desktop)
+      - Peut scroller (si contenu trop grand)
+      - Les sections internes sont overflow:hidden (pas de scroll interne)
+    ========================================================= */
+    .panel main{
+      height: 100%;
+      min-height: 0;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-content:start;
+
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .panel main::-webkit-scrollbar{ width:0; height:0; }
+
+    /* Sections internes : on évite tout scroll local */
+    .panel main section{ overflow: hidden; }
+
+    /* =========================================================
+      TIMELINE (liste de parcours/expériences)
+    ========================================================= */
+    .timeline{
+      display:grid;
+      gap: 12px;
+      margin:0;
+      padding:0;
+      list-style:none;
+      position:relative;
+      z-index:1;
+    }
+
+    /* Item “details” (dépliable) */
+    details.item{
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--card2);
+      overflow:hidden;
+      position:relative;
+    }
+
+    /* Ligne résumé cliquable */
+    details.item > summary{
+      list-style:none;
+      cursor:pointer;
+      padding: 14px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    details.item > summary::-webkit-details-marker{ display:none; }
+
+    /* Partie gauche du summary : dot + textes */
+    .sumleft{ display:flex; gap:12px; align-items:flex-start; }
+
+    /* Dot colorée (accent gradient) */
+    .dot{
+      width:12px; height:12px;
+      margin-top:6px;
+      border-radius:999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 18px rgba(106,168,255,.45);
+      flex: 0 0 auto;
+    }
+
+    .title{
+      font-weight: 900;
+      font-size: 15px;
+      margin:0;
+    }
+    .where{
+      color: var(--muted);
+      margin: 2px 0 0;
+      font-size: 13px;
+      font-weight: 650;
+    }
+    .meta{
+      color: var(--muted);
+      font-weight: 750;
+      font-size: 13px;
+      white-space:nowrap;
+    }
+
+    /* Contenu de l’item */
+    .content{ padding: 0 14px 14px; }
+    details.item .content{ overflow: visible; }
+
+    .bullets{
+      margin: 0;
+      padding-left: 18px;
+      opacity:.95;
+    }
+    .bullets li{ margin: 6px 0; }
+
+    /* =========================================================
+      ITEM STATIQUE (Académique)
+      - Même look qu’un <details>, mais non cliquable
+      - pointer-events:none => aucune interaction
+    ========================================================= */
+    .itemStatic{
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--card2);
+      overflow: hidden;
+      position: relative;
+
+      pointer-events: none; /* non cliquable comme chez toi */
+    }
+    .itemStatic *{ pointer-events:none; }
+
+    .itemStatic .summaryRow{
+      padding: 14px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: default;
+      user-select: text;
+    }
+
+    .itemStatic .content{
+      padding: 0 14px 14px;
+      overflow: visible;
+      max-height: none;
+    }
+
+    /* =========================================================
+      COMPÉTENCES (grids + tags + recherche)
+    ========================================================= */
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .skillgroup{
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: var(--card2);
+      position:relative;
+      z-index:1;
+    }
+
+    .skillgroup h3{
+      margin:0 0 10px;
+      font-size: 14px;
+      color: var(--muted);
+      letter-spacing:.2px;
+      text-transform: uppercase;
+    }
+
+    .tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    /* Pastilles compétences cliquables */
+    .tag{
+      font-size: 13px;
+      padding:7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      transition: transform .15s ease, filter .15s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+
+    .tag:hover{
+      transform: translateY(-1px);
+      border-color: rgba(46,242,255,.30);
+      box-shadow: 0 0 18px rgba(46,242,255,.10);
+    }
+
+    /* État “actif” quand on clique sur un tag (JS ajoute/retire .active) */
+    .tag.active{
+      border-color: rgba(46,242,255,.55);
+      background: rgba(46,242,255,.12);
+      box-shadow: 0 0 20px rgba(46,242,255,.12);
+    }
+
+    /* Barre de recherche compétences */
+    .search{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin: 10px 0 0;
+      position:relative;
+      z-index:1;
+    }
+
+    .search input{
+      width:100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      outline:none;
+    }
+    .search input::placeholder{ color: rgba(183,194,226,.75); }
+
+    /* Footer (bas de page) */
+    footer{
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: 12px;
+      text-align:center;
+      opacity:.9;
+      position:relative;
+      z-index:1;
+    }
+
+    /* =========================================================
+      BOUTONS FLOTTANTS (FAB)
+      - Accès rapide : home (onglet 1) + print/PDF
+    ========================================================= */
+    .fab{
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      z-index:1000;
+    }
+
+    .fab button{
+      border-radius: 999px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      cursor:pointer;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      font-weight: 900;
+    }
+    .fab button:hover{ filter: brightness(1.08); }
+
+    /* =========================================================
+      RESPONSIVE
+      - Sous 900px : header passe en 1 colonne + panels en 1 colonne
+    ========================================================= */
+    @media (max-width: 900px){
+      header{ grid-template-columns: 1fr; }
+      .panel main{ grid-template-columns: 1fr; }
+      .grid2{ grid-template-columns: 1fr; }
+      .nav{ border-radius: 16px; }
+    }
+
+    /* =========================================================
+      PRINT (export PDF)
+      - On retire les éléments décoratifs et les boutons
+      - On force l’affichage de tous les panels
+    ========================================================= */
+    @media print{
+      body{ background:#fff; color:#111; overflow: visible; height:auto; }
+      .nav, .fab, .progress, #cyberParticles { display:none !important; }
+      .hero,.contact,section{ box-shadow:none; background:#fff; border:1px solid #ddd; }
+      a{ color:#111; text-decoration:underline; }
+      details.item{ background:#fff; border-color:#ddd; }
+      .itemStatic{ background:#fff; border-color:#ddd; }
+      .hint{ border-color:#ddd; }
+      .panel{ display:block !important; height:auto; }
+      .wrap{ height:auto; }
+    }
+
+    /* =========================================================
+      FOCUS PRO (carte image + caption glass + HUD)
+      - figure .focusMedia : conteneur image
+      - .focusCaption : bandeau glass en bas
+      - .hud/.scan : grille + balayage
+    ========================================================= */
+    .focusCard{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .focusMedia{
+      position: relative;
+      margin: 0;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      box-shadow: 0 18px 50px rgba(0,0,0,.35);
+      min-height: 0;
+      flex: 1;
+      isolation: isolate;
+    }
+
+    /* Trick pour garder un ratio 16:9 (56%) */
+    .focusMedia::before{ content:""; display:block; padding-top: 56%; }
+
+    /* Image en cover, calée sur tout le conteneur */
+    .focusImg{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      transform: scale(1.02);
+      filter: saturate(.9) contrast(1.02);
+      opacity: .92;
+      z-index: 1;
+    }
+
+    /* Overlay de dégradés par dessus l’image pour lisibilité */
+    .focusMedia::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:2;
+      pointer-events:none;
+      background:
+        radial-gradient(900px 300px at 20% 20%, rgba(106,168,255,.14), transparent 60%),
+        radial-gradient(900px 320px at 80% 15%, rgba(124,58,237,.12), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.18));
+    }
+
+    /* Bandeau glass en bas */
+    .focusCaption{
+      position:absolute;
+      left:14px;
+      right:14px;
+      bottom:14px;
+
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+
+      padding: 12px 14px;
+      border-radius: 18px;
+
+      background: transparent;
+      backdrop-filter: blur(2px) saturate(1.4);
+      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+
+      border: 1px solid rgba(255,255,255,0.16);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 10px 26px rgba(0,0,0,0.18);
+
+      z-index: 10;
+    }
+
+    .focusBadge{
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(106,168,255,0.10);
+      border: 1px solid rgba(106,168,255,0.30);
+      color: rgba(233,238,252,0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .focusText{
+      font-size: 12px;
+      color: rgba(233,238,252,.85);
+      font-weight: 700;
+
+      /* Évite que le texte déborde du bandeau */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Grille HUD par dessus l’image */
+    .focusMedia .hud{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      z-index:3;
+      background:
+        linear-gradient(to right, rgba(46,242,255,.10) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(46,242,255,.10) 1px, transparent 1px);
+      background-size: 120px 120px;
+      opacity:.15;
+      mix-blend-mode: screen;
+    }
+
+    /* Scan lumineux vertical */
+    .focusMedia .scan{
+      position:absolute;
+      left:0; right:0;
+      top:-30%;
+      height: 40%;
+      z-index:4;
+
+      background: linear-gradient(180deg, transparent, rgba(46,242,255,.10), transparent);
+      filter: blur(1px);
+      animation: scanMove 4.8s linear infinite;
+      opacity:.65;
+      pointer-events:none;
+    }
+
+    @keyframes scanMove{
+      0%{ transform: translateY(0); }
+      100%{ transform: translateY(220%); }
+    }
+
+    /* =========================================================
+      OVERRIDES SPÉCIFIQUES PAR PANELS (compact & anti-scroll)
+      - Tu “tunes” chaque onglet sans casser le design global
+    ========================================================= */
+
+    /* ACADEMIQUE compact (déjà chez toi) */
+    #panel-academique section{ padding: 14px; }
+    #panel-academique .timeline{ gap: 8px; }
+    #panel-academique .itemStatic{ margin-top: 6px; }
+    #panel-academique .summaryRow{ padding: 12px 12px 8px; gap: 10px; }
+    #panel-academique .where{ font-size: 12.5px; line-height: 1.3; margin-top: 1px; }
+    #panel-academique .content{ padding: 0 12px 10px; }
+    #panel-academique .bullets{ padding-left: 16px; }
+    #panel-academique .bullets li{ margin: 5px 0; line-height: 1.4; }
+
+    /* EXPERIENCES: item non cliquable (fusion des doublons)
+       - On garde <details> mais on désactive l’interaction via pointer-events
+       - data-static="1" = items forcés ouverts + non cliquables */
+    details.item[data-static="1"]{ overflow: hidden; }
+    details.item[data-static="1"] > summary{
+      cursor: default !important;
+      user-select: text;
+      padding: 10px 12px 8px !important;
+      gap: 10px !important;
+    }
+    details.item[data-static="1"] > summary,
+    details.item[data-static="1"] > summary *{ pointer-events: none !important; }
+
+    /* IMPORTANT : on s'assure qu'aucun overflow auto ne s'applique ici
+       -> évite le “mini-scroll” dans la bulle */
+    #panel-experiences section,
+    #panel-experiences .timeline,
+    #panel-experiences details.item[data-static="1"],
+    #panel-experiences details.item[data-static="1"] .content{
+      overflow: hidden !important;
+    }
+
+    /* Le contenu interne doit rester visible (pas de coupe) */
+    details.item[data-static="1"] .content{
+      overflow: visible !important;
+      max-height: none !important;
+      padding: 0 12px 10px !important;
+    }
+
+    /* Typo compact dans l’onglet expériences */
+    #panel-experiences details.item[data-static="1"] .title{
+      font-size: 14px !important;
+      line-height: 1.2 !important;
+      margin: 0 !important;
+    }
+    #panel-experiences details.item[data-static="1"] .where{
+      font-size: 12px !important;
+      line-height: 1.25 !important;
+      margin: 2px 0 0 !important;
+      opacity: .92;
+    }
+    #panel-experiences details.item[data-static="1"] .meta{ font-size: 12px !important; }
+
+    #panel-experiences details.item[data-static="1"] .bullets{
+      padding-left: 16px !important;
+      margin: 0 !important;
+      font-size: 13px !important;
+      line-height: 1.25 !important;
+    }
+    #panel-experiences details.item[data-static="1"] .bullets li{ margin: 4px 0 !important; }
+    #panel-experiences .timeline{ gap: 8px !important; }
+
+    /* IMAGE PROJET : SANS BULLE DERRIÈRE
+       -> image “propre” sans fond, sans bordure */
+    #panel-experiences .projetImg,
+    #panel-academique .projetImg,
+    .projetImg{
+      display: block;
+      width: 100%;
+      max-height: 140px;
+      height: auto;
+      object-fit: contain;
+      margin-top: 8px;
+      background: none !important;
+      border: none !important;
+      box-shadow: none !important;
+      border-radius: 10px;
+    }
+
+    /* COMPETENCES : compact */
+    #panel-competences section{ padding: 14px 14px 10px !important; }
+    #panel-competences h2{ margin-bottom: 8px; }
+    #panel-competences .search{ margin: 6px 0 10px !important; }
+    #panel-competences .search input{ padding: 8px 10px !important; font-size: 13px !important; }
+    #panel-competences .grid2{ gap: 10px !important; }
+    #panel-competences .skillgroup{ padding: 12px !important; }
+    #panel-competences .skillgroup h3{ margin: 0 0 8px !important; font-size: 13px !important; }
+    #panel-competences .tags{ gap: 6px !important; }
+    #panel-competences .tag{ padding: 5px 9px !important; font-size: 12.5px !important; line-height: 1.15 !important; }
+    #panel-competences p{ margin-top: 8px; font-size: 12px; }
+
+    /* Rééquilibrage colonnes (Académique/Expériences)
+       -> colonne gauche un peu plus large */
+    #panel-academique main,
+    #panel-experiences main{
+      grid-template-columns: 1.1fr 0.7fr !important;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- =======================================================
+    CANVAS : particules + liens (animation JS)
+    - Purement décoratif, donc pointer-events:none
+  ======================================================== -->
+  <canvas id="cyberParticles"></canvas>
+
+  <!-- Barre fine en haut (décor / structure) -->
+  <div class="progress" id="progress"></div>
+
+  <!-- =======================================================
+    CONTENEUR PRINCIPAL DU SITE
+  ======================================================== -->
+  <div class="wrap">
+    <!-- =====================================================
+      NAVIGATION (onglets)
+      - role="tablist" + role="tab" pour accessibilité
+      - data-tab = identifiant du panel à afficher
+    ====================================================== -->
+    <nav class="nav" aria-label="Navigation du CV">
+      <div class="links" role="tablist" aria-label="Sections">
+        <button class="tab" role="tab" aria-selected="true" data-tab="academique">Académique</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="experiences">Expériences</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="competences">Compétences</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="softskills">Soft skills</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="passions">Passions</button>
+      </div>
+
+      <!-- Logo décoratif (aria-hidden) -->
+      <img class="navLogo" src="logo.png" alt="" aria-hidden="true" />
+    </nav>
+
+    <!-- =====================================================
+      HEADER : HERO + CONTACT
+      - Présentation + infos essentielles
+    ====================================================== -->
+    <header>
+      <div class="hero">
+        <div class="glow" aria-hidden="true"></div>
+
+        <h1 class="name">Valentin Nativel</h1>
+        <p class="role">Administration réseaux • Veille & renseignement technologique</p>
+
+        <p class="summary">
+          Étudiant issu de la filière <strong>STI2D</strong>, intéressé par l’<strong>administration réseau</strong> et la
+          <strong>veille technologique</strong>. J’aime comprendre, documenter et améliorer des solutions techniques avec
+          méthode et autonomie.
+        </p>
+
+        <div class="pillrow" aria-label="Infos rapides">
+          <span class="pill">📍 La Réunion</span>
+          <span class="pill">🎓 STI2D</span>
+          <span class="pill">⚡ Curieux & autonome</span>
+        </div>
+      </div>
+
+      <aside class="contact">
+        <h2>Contact <span class="hint">essentiel</span></h2>
+        <ul>
+          <li>📧 <a href="mailto:v.nativel@rt-iut.re">v.nativel@rt-iut.re</a></li>
+          <li>📞 +262 693 45 12 75</li>
+          <li>🔗 <a href="https://www.linkedin.com/in/valentin-nativel-2307353a0/" target="_blank" rel="noreferrer">LinkedIn</a></li>
+        </ul>
+      </aside>
+    </header>
+
+    <!-- =====================================================
+      STAGE : zone qui contient les PANELS (onglets)
+      - Un seul panel est visible à la fois (.active)
+    ====================================================== -->
+    <div class="stage">
+
+      <!-- =======================
+        PANEL : Académique
+      ======================== -->
+      <div class="panel active" id="panel-academique" role="tabpanel" aria-label="Académique">
+        <main>
+          <section>
+            <h2>Parcours académique <span class="hint">formation</span></h2>
+
+            <ul class="timeline">
+              <li>
+                <!-- Item statique : pas de clic, pas de scroll interne -->
+                <div class="itemStatic">
+                  <div class="summaryRow">
+                    <div class="sumleft">
+                      <span class="dot" aria-hidden="true"></span>
+                      <div>
+                        <p class="title">Bac STI2D – Lycée Pierre Poivre</p>
+                        <p class="where">Sciences et technologies de l’industrie et du développement durable</p>
+                      </div>
+                    </div>
+                    <span class="meta">Lycée</span>
+                  </div>
+
+                  <div class="content">
+                    <ul class="bullets">
+                      <li>Approche technologique (analyse, conception, organisation d’un projet).</li>
+                      <li>Habitude de travailler en autonomie et de présenter un résultat clair.</li>
+                      <li>Connaissance basique en informatique.</li>
+                      <li>Compréhension de langages techniques simples.</li>
+                    </ul>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Objectifs</h2>
+            <ul class="bullets">
+              <li>Consolider les bases réseau (adressage, VLAN, dépannage).</li>
+              <li>Me tenir prêt au monde du travail.</li>
+            </ul>
+          </section>
+        </main>
+      </div>
+
+      <!-- =======================
+        PANEL : Expériences
+      ======================== -->
+      <div class="panel" id="panel-experiences" role="tabpanel" aria-label="Expériences">
+        <main>
+          <section>
+            <h2>Expériences <span class="hint">projets / concours</span></h2>
+
+            <ul class="timeline">
+              <li>
+                <!-- data-static="1" => on force “open” + désactivation du clic via CSS -->
+                <details class="item" open data-static="1">
+                  <summary>
+                    <div class="sumleft">
+                      <span class="dot" aria-hidden="true"></span>
+                      <div>
+                        <p class="title">Concours technologique – Lycée Pierre Poivre</p>
+                        <p class="where">Participation en STI2D</p>
+                      </div>
+                    </div>
+                    <span class="meta">Épreuves</span>
+                  </summary>
+
+                  <div class="content">
+                    <ul class="bullets">
+                      <li>Organisation du travail et respect des étapes (analyse → solution → restitution).</li>
+                      <li>Recherche d’informations techniques et choix justifiés.</li>
+                    </ul>
+                  </div>
+                </details>
+              </li>
+
+              <li>
+                <details class="item" open data-static="1">
+                  <summary>
+                    <div class="sumleft">
+                      <span class="dot" aria-hidden="true"></span>
+                      <div>
+                        <p class="title">Projet technologique, réalisation d'une serre autonome – Terminale STI2D</p>
+                        <p class="where">Projet réalisé de manière autonome</p>
+                      </div>
+                    </div>
+                    <span class="meta">Autonomie</span>
+                  </summary>
+
+                  <div class="content">
+                    <ul class="bullets">
+                      <li>Planification et suivi des tâches,résolution de problèmes,documentation simple.</li>
+                    </ul>
+                  </div>
+                </details>
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Cela sgnifie que</h2>
+            <ul class="bullets">
+              <li>Bases en informatique dès mon arrivé en RT.</li>
+              <li>Rigueur et autonomie dans un projet concret.</li>
+            </ul>
+
+            <h2>Projet :</h2>
+            <img src="pro.png" alt="image serre" class="projetImg">
+          </section>
+        </main>
+      </div>
+
+      <!-- =======================
+        PANEL : Compétences
+      ======================== -->
+      <div class="panel" id="panel-competences" role="tabpanel" aria-label="Compétences">
+        <main>
+          <section>
+            <h2>Compétences techniques <span class="hint">hard skills</span></h2>
+
+            <!-- Recherche : filtre l’affichage des tags via JS -->
+            <div class="search" aria-label="Recherche compétences">
+              <input id="skillSearch" type="text" placeholder="Rechercher une compétence (ex : réseau, admin, veille...)" />
+            </div>
+
+            <div class="grid2" style="margin-top:12px;">
+              <div class="skillgroup">
+                <h3>Réseaux & Administration</h3>
+                <div class="tags" id="skillsTech">
+                  <span class="tag" data-skill="Administration réseaux">Administration réseaux</span>
+                  <span class="tag" data-skill="Réseaux (bases)">Réseaux (bases)</span>
+                  <span class="tag" data-skill="Adressage IP">Adressage IP</span>
+                  <span class="tag" data-skill="Diagnostic / dépannage">Diagnostic / dépannage</span>
+                  <span class="tag" data-skill="Documentation">Documentation</span>
+                </div>
+              </div>
+
+              <div class="skillgroup">
+                <h3>Veille & Renseignement</h3>
+                <div class="tags" id="skillsVeille">
+                  <span class="tag" data-skill="Veille technologique">Veille technologique</span>
+                  <span class="tag" data-skill="Recherche d'information">Recherche d’information</span>
+                  <span class="tag" data-skill="Analyse & synthèse">Analyse & synthèse</span>
+                  <span class="tag" data-skill="Comparaison de solutions">Comparaison de solutions</span>
+                  <span class="tag" data-skill="Curiosité technique">Curiosité technique</span>
+                </div>
+              </div>
+            </div>
+
+            <p style="margin:12px 0 0; color:var(--muted); font-size:13px;">
+              Astuce : cliquez pour ajouter une compétence en surbrillance.
+            </p>
+          </section>
+
+          <section class="focusCard">
+            <h2>Focus</h2>
+
+            <!-- Figure image + bandeau glass + HUD -->
+            <figure class="focusMedia">
+              <img src="baniere.png" alt="Illustration réseau / lab" class="focusImg">
+
+              <figcaption class="focusCaption">
+                <span class="focusBadge">LAB RÉSEAU</span>
+                <span class="focusText">Switching • câblage • diag</span>
+              </figcaption>
+
+              <div class="hud" aria-hidden="true"></div>
+              <div class="scan" aria-hidden="true"></div>
+            </figure>
+          </section>
+        </main>
+      </div>
+
+      <!-- =======================
+        PANEL : Soft skills
+      ======================== -->
+      <div class="panel" id="panel-softskills" role="tabpanel" aria-label="Soft skills">
+        <main>
+          <section>
+            <h2>Soft skills <span class="hint">savoir-être</span></h2>
+            <div class="tags">
+              <span class="tag">Autonomie</span>
+              <span class="tag">Rigueur</span>
+              <span class="tag">Esprit d’analyse</span>
+              <span class="tag">Communication</span>
+              <span class="tag">Travail en équipe</span>
+              <span class="tag">Adaptabilité</span>
+            </div>
+          </section>
+        </main>
+      </div>
+
+      <!-- =======================
+        PANEL : Passions
+      ======================== -->
+      <div class="panel" id="panel-passions" role="tabpanel" aria-label="Passions">
+        <main>
+          <section style="grid-column: 1 / -1;">
+            <h2>Passions & hobbies</h2>
+            <div class="grid2">
+              <div class="skillgroup">
+                <h3>Technologies</h3>
+                <ul class="bullets">
+                  <li>Découverte des nouvelles technologies informatiques.</li>
+                  <li>Intérêt pour le sport et la musique.</li>
+                </ul>
+              </div>
+              <div class="skillgroup">
+                <h3>Curiosité & projets</h3>
+                <ul class="bullets">
+                  <li>Projets profesionnel : apprendre en pratiquant l'administration réseau et obtenir mon but avec une alternance</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- =====================================================
+      FOOTER
+    ====================================================== -->
+    <footer>
+      Les catégories sont cliquables !
+      © <span id="year"></span> Valentin Nativel — CV web (HTML/CSS/)
+    </footer>
+  </div>
+
+  <!-- =======================================================
+    FAB : boutons d’actions rapides (home + print)
+  ======================================================== -->
+  <div class="fab" aria-label="Actions rapides">
+    <button id="toHome" title="Ouvrir la première section">⌂</button>
+    <button id="print" title="Imprimer / PDF">PDF</button>
+  </div>
+
+  <script>
+    /* =========================================================
+      INIT : année automatique dans le footer
+    ========================================================= */
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    /* =========================================================
+      NAVIGATION PAR ONGLET
+      - tabs : boutons du bandeau
+      - panels : divs de contenu
+      - openTab(tabId) : active le bon panel + met aria-selected
+    ========================================================= */
+    const tabs = Array.from(document.querySelectorAll(".nav .tab"));
+    const panels = Array.from(document.querySelectorAll(".panel"));
+
+    function openTab(tabId){
+      // Met à jour l’état sélectionné (accessibilité + style CSS)
+      tabs.forEach(t => t.setAttribute("aria-selected", String(t.dataset.tab === tabId)));
+
+      // Affiche le bon panel (et cache les autres)
+      panels.forEach(p => p.classList.toggle("active", p.id === "panel-" + tabId));
+
+      // Focus optionnel (si le navigateur supporte focus())
+      const activePanel = document.getElementById("panel-" + tabId);
+      if(activePanel) activePanel.focus?.();
+    }
+
+    // Clic sur un onglet => on ouvre le panel correspondant
+    tabs.forEach(t => t.addEventListener("click", () => openTab(t.dataset.tab)));
+
+    /* =========================================================
+      TAGS INTERACTIFS
+      - Rend les .tag cliquables + clavier (Enter/Espace)
+      - Toggle de la classe .active (surbrillance)
+      - tag.dataset.bound évite de rebinder plusieurs fois
+    ========================================================= */
+    function bindTagInteractions(root=document){
+      root.querySelectorAll(".tag").forEach(tag => {
+        if(tag.dataset.bound) return; // déjà bindé
+        tag.dataset.bound = "1";
+
+        tag.addEventListener("click", () => tag.classList.toggle("active"));
+
+        // Accessibilité : rôle bouton + navigation clavier
+        tag.setAttribute("role", "button");
+        tag.setAttribute("tabindex", "0");
+        tag.addEventListener("keydown", (e) => {
+          if(e.key === "Enter" || e.key === " "){
+            e.preventDefault();
+            tag.classList.toggle("active");
+          }
+        });
+      });
+    }
+    bindTagInteractions();
+
+    /* =========================================================
+      RECHERCHE COMPÉTENCES (filtrage)
+      - On récupère tous les tags de #skillsTech et #skillsVeille
+      - Sur input : on compare le texte (lowercase) et on cache/affiche
+    ========================================================= */
+    const search = document.getElementById("skillSearch");
+    if(search){
+      const skillTags = Array.from(document.querySelectorAll("#skillsTech .tag, #skillsVeille .tag"));
+      search.addEventListener("input", () => {
+        const q = search.value.trim().toLowerCase();
+        skillTags.forEach(t => {
+          const txt = (t.dataset.skill || t.textContent).toLowerCase();
+          t.style.display = txt.includes(q) ? "inline-flex" : "none";
+        });
+      });
+    }
+
+    /* =========================================================
+      BOUTONS FLOTTANTS
+      - Home => retourne sur l’onglet Académique
+      - Print => lance l’impression (export PDF possible)
+    ========================================================= */
+    document.getElementById("toHome").addEventListener("click", () => openTab("academique"));
+    document.getElementById("print").addEventListener("click", () => window.print());
+
+    /* =========================================================
+      RACCORCIS CLAVIER
+      - 1..5 : ouvrir les onglets rapidement
+      - Ignore si l'utilisateur tape dans un input/textarea
+    ========================================================= */
+    window.addEventListener("keydown", (e) => {
+      if(e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+      const map = { "1":"academique", "2":"experiences", "3":"competences", "4":"softskills", "5":"passions" };
+      if(map[e.key]) openTab(map[e.key]);
+    });
+
+    /* =========================================================
+      EFFETS VISUELS
+      - Glitch sur le nom (toutes les ~3.8s)
+      - Canvas particules + liens (animation continue)
+    ========================================================= */
+    (function(){
+      /* ---- Glitch texte (nom) ---- */
+      const name = document.querySelector(".name");
+      if(name){
+        // data-text sert aux pseudo-éléments ::before/::after
+        name.dataset.text = name.textContent.trim();
+
+        // Active brièvement data-glitch="1" puis retourne à 0
+        setInterval(() => {
+          name.dataset.glitch = "1";
+          setTimeout(()=> name.dataset.glitch = "0", 120);
+        }, 3800);
+      }
+
+      /* ---- Canvas cyberParticles ---- */
+      const c = document.getElementById("cyberParticles");
+      if(!c) return;
+      const ctx = c.getContext("2d");
+
+      let w, h, dpr;
+
+      // Resize : adapte le canvas à la taille écran + devicePixelRatio (net sur Retina)
+      function resize(){
+        dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+        w = c.width = Math.floor(innerWidth * dpr);
+        h = c.height = Math.floor(innerHeight * dpr);
+        c.style.width = innerWidth + "px";
+        c.style.height = innerHeight + "px";
+      }
+      window.addEventListener("resize", resize);
+      resize();
+
+      // Particules
+      const N = 70; // nombre de points
+      const p = Array.from({length:N}, () => ({
+        x: Math.random()*w,
+        y: Math.random()*h,
+        r: (Math.random()*1.4 + 0.6)*dpr,        // rayon
+        vx:(Math.random()*0.35 + 0.05)*dpr,      // vitesse X
+        vy:(Math.random()*0.22 + 0.02)*dpr       // vitesse Y
+      }));
+
+      // Animation frame
+      function step(){
+        ctx.clearRect(0,0,w,h);
+
+        /* 1) Dessine les points */
+        for(const a of p){
+          a.x += a.vx; a.y += a.vy;
+
+          // Recyclage : si sort de l’écran, réapparaît à l’opposé
+          if(a.x > w+40) a.x = -40;
+          if(a.y > h+40) a.y = -40;
+
+          ctx.beginPath();
+          ctx.arc(a.x, a.y, a.r, 0, Math.PI*2);
+          ctx.fillStyle = "rgba(46,242,255,0.35)";
+          ctx.fill();
+        }
+
+        /* 2) Relie les points proches par des traits */
+        for(let i=0;i<N;i++){
+          for(let j=i+1;j<N;j++){
+            const dx = p[i].x - p[j].x;
+            const dy = p[i].y - p[j].y;
+            const dist = Math.hypot(dx,dy);
+
+            // Seuil de distance pour créer un lien
+            if(dist < 140*dpr){
+              // Plus c'est proche, plus le trait est visible
+              const alpha = (1 - dist/(140*dpr))*0.18;
+              ctx.strokeStyle = `rgba(46,242,255,${alpha})`;
+              ctx.lineWidth = 1*dpr;
+              ctx.beginPath();
+              ctx.moveTo(p[i].x, p[i].y);
+              ctx.lineTo(p[j].x, p[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        requestAnimationFrame(step);
+      }
+      step();
+    })();
+  </script>
+</body>
+</html>
+```
